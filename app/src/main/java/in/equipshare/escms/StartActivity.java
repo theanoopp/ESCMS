@@ -44,6 +44,8 @@ public class StartActivity extends AppCompatActivity {
 
         */
 
+        //new 
+
         startActivity(new Intent(StartActivity.this, RegisterActivity.class));
         finish();
 
