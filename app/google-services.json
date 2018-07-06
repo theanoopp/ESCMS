@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "419018113033",
+    "firebase_url": "https://escms-bcaac.firebaseio.com",
+    "project_id": "escms-bcaac",
+    "storage_bucket": "escms-bcaac.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:419018113033:android:e17e0801698143b5",
+        "android_client_info": {
+          "package_name": "in.equipshare.escms"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "419018113033-927to2o7ru09g8o9daglkrfktfts1rvn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "in.equipshare.escms",
+            "certificate_hash": "0d33d0af0ebf088fdb2f32d5742b9ccf924d44ec"
+          }
+        },
+        {
+          "client_id": "419018113033-4te1kps4904ct47951f1i0daaegpeh7q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBc4ycfIYvh74bugakWB3tTuNCsmWXFmj8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "419018113033-4te1kps4904ct47951f1i0daaegpeh7q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
