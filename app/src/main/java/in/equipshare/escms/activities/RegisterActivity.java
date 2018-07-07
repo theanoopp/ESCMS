@@ -1,10 +1,8 @@
 package in.equipshare.escms.activities;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -16,18 +14,13 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import in.equipshare.escms.R;
 import in.equipshare.escms.model.Result;
-import in.equipshare.escms.model.SignupResult;
+import in.equipshare.escms.model.SignupUser;
 import in.equipshare.escms.rest.APIService;
 import in.equipshare.escms.utils.ApiUtils;
 import retrofit2.Call;
@@ -55,8 +48,6 @@ public class RegisterActivity extends AppCompatActivity {
     private RadioGroup compnayTypeRadio;
 
     private Button sbtButton;
-
-    private FirebaseAuth mAuth;
 
     private boolean getOwner = true;
 
@@ -86,8 +77,6 @@ public class RegisterActivity extends AppCompatActivity {
         citySpinner = findViewById(R.id.citySpinner);
 
         sbtButton = findViewById(R.id.submitBT);
-
-        mAuth = FirebaseAuth.getInstance();
 
         compnayTypeRadio.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -121,8 +110,6 @@ public class RegisterActivity extends AppCompatActivity {
 
             }
         });
-
-        //startSignup("name","k","k","k","k","k","k","k","k","k","k","k");
 
 
     }
@@ -163,8 +150,6 @@ public class RegisterActivity extends AppCompatActivity {
         RadioButton r = (RadioButton)  compnayTypeRadio.getChildAt(idx);
         String companyType = r.getText().toString();
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String contactNumber = user.getPhoneNumber() ;
 
         String address = addressInput.getEditText().getText().toString();
         String pin = pinInput.getEditText().getText().toString();
@@ -244,9 +229,6 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
 
-
-
-
         if (cancel) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
@@ -256,11 +238,16 @@ public class RegisterActivity extends AppCompatActivity {
 
             // TODO: 7/4/2018 showProgress(true);
 
-            startSignup(companyName,email,password,contactPerson,companyType,ownerName,ownerEmail,state,city,address,pin,contactNumber);
+            //startSignup(companyName,email,password,contactPerson,companyType,ownerName,ownerEmail,state,city,address,pin,contactNumber);
 
 
+            Intent intent = new Intent(RegisterActivity.this,MobileAuthActivity.class);
 
+            SignupUser user1 = new SignupUser(companyName,companyType,email,"default",contactPerson,password,state,city,pin,address,ownerName,ownerEmail);
 
+            intent.putExtra("signup_model",user1);
+
+            startActivity(intent);
 
 
         }
@@ -290,6 +277,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         Log.d("MY_E",map.toString());
 
+        /*
 
         mAPIService.signup(map).enqueue(new Callback<Result>() {
             @Override
@@ -317,28 +305,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
-        mAPIService.login("Anoop","mehra").enqueue(new Callback<List<SignupResult>>() {
-            @Override
-            public void onResponse(Call<List<SignupResult>> call, Response<List<SignupResult>> response) {
-
-
-                if(response.isSuccessful()) {
-                    Toast.makeText(RegisterActivity.this, response.body().toString(), Toast.LENGTH_SHORT).show();
-                    Log.i("MY_E", "post submitted to API." + response.body().toString());
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<List<SignupResult>> call, Throwable t) {
-
-
-
-                Toast.makeText(RegisterActivity.this, "Unable to submit post to API. "+t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                Log.e("MY_E", "Unable to submit post to API. "+t.getLocalizedMessage());
-
-            }
-        });
+        */
 
 
     }

@@ -16,12 +16,17 @@ public interface APIService {
 
     @POST("/login2")
     @FormUrlEncoded
-    Call<List<SignupResult>> login(@Field("email") String title,
+    Call<List<SignupResult>> login2(@Field("email") String title,
                                    @Field("password") String body);
 
 
     @FormUrlEncoded
     @POST("/signup")
     Call<Result>signup(@FieldMap Map<String,String> map);
+
+    @FormUrlEncoded
+    @POST("/login")
+    Call<Result>login(@Field(value="username",encoded = true) String username,@Field(value="password",encoded = true) String password);
+
 
 }

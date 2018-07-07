@@ -1,5 +1,7 @@
 package in.equipshare.escms.activities;
 
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -7,6 +9,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -25,16 +28,30 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import in.equipshare.escms.R;
+import in.equipshare.escms.StartActivity;
+import in.equipshare.escms.model.Result;
+import in.equipshare.escms.model.SignupUser;
+import in.equipshare.escms.rest.APIService;
+import in.equipshare.escms.utils.ApiUtils;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MobileAuthActivity extends AppCompatActivity {
 
     private static final String TAG = "MobileAuthActivity";
+
+
+    private SignupUser signupUser;
 
 
     private ConstraintLayout phoneLayout,codeLayout;
@@ -52,12 +69,18 @@ public class MobileAuthActivity extends AppCompatActivity {
     private String mVerificationId;
     private PhoneAuthProvider.ForceResendingToken mResendToken;
 
+    private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mobile_auth);
         //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
+
+        Intent i = getIntent();
+        Bundle bundle = i.getExtras();
+        signupUser = (SignupUser)bundle.getSerializable("signup_model");
 
 
         phoneLayout = findViewById(R.id.phoneLayout);
@@ -139,11 +162,7 @@ public class MobileAuthActivity extends AppCompatActivity {
             @Override
             public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
 
-
-                Log.d("MOBILE","OTP is fine");
-
                 signInWithPhoneAuthCredential(phoneAuthCredential);
-
 
             }
 
@@ -203,12 +222,15 @@ public class MobileAuthActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
 
-                            // TODO: 7/4/2018 send to email screen
-                            startActivity(new Intent(MobileAuthActivity.this,RegisterActivity.class));
-                            finish();
+                            FirebaseUser user = task.getResult().getUser();
+                            String contactNo = user.getPhoneNumber();
+
+                            signupUser.setContactNumber(contactNo);
+
+                            startSignup(signupUser);
 
 
-                            // ...
+
                         } else {
                             // Sign in failed, display a message and update the UI
 
@@ -229,6 +251,101 @@ public class MobileAuthActivity extends AppCompatActivity {
                 });
     }
 
+
+    private void startSignup(SignupUser signupUser) {
+
+        progressDialog=new ProgressDialog(MobileAuthActivity.this);
+        progressDialog.setMessage("Please wait while we create your account.");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
+        APIService mAPIService = ApiUtils.getAPIService();
+
+        Map<String,String> map=new HashMap<>();
+        map.put("CompanyName",signupUser.getCompanyName());
+        map.put("CompanyType",signupUser.getCompanyType());
+        map.put("EmailId",signupUser.getEmail());
+        map.put("ContactNumber",signupUser.getContactNumber());
+        map.put("ContactPerson",signupUser.getContactPerson());
+        map.put("Password",signupUser.getPassword());
+        map.put("State",signupUser.getState());
+        map.put("City",signupUser.getCity());
+        map.put("PIN",signupUser.getPin());
+        map.put("Address",signupUser.getAddress());
+        //not if proprietor
+        map.put("OwnerName",signupUser.getOwnerName());
+        map.put("OwnerEmail",signupUser.getOwnerEmail());
+
+
+        mAPIService.signup(map).enqueue(new Callback<Result>() {
+            @Override
+            public void onResponse(Call<Result> call, @NonNull Response<Result> response) {
+
+                if(response.isSuccessful()) {
+
+                    Result result =  response.body();
+
+                    if(result == null){
+
+                        progressDialog.cancel();
+
+                        Toast.makeText(MobileAuthActivity.this,"Server error : "+response.message(),Toast.LENGTH_SHORT).show();
+                        progressDialog.cancel();
+
+                    }else if(!result.getSuccess()){
+
+
+                        new AlertDialog.Builder(MobileAuthActivity.this)
+                                .setMessage(result.getMsg())
+                                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                                        finish();
+
+                                    }
+                                })
+                                .show();
+                        progressDialog.cancel();
+
+
+                    }else if(result.getSuccess()){
+
+
+                        new AlertDialog.Builder(MobileAuthActivity.this)
+                                .setTitle("New Account created")
+                                .setMessage("Please verify your email to login")
+                                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                                        Intent intent = new Intent(getApplicationContext(),StartActivity.class);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        startActivity(intent);
+
+
+                                    }
+                                })
+                                .show();
+                        progressDialog.cancel();
+
+                    }
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<Result> call, Throwable t) {
+
+                Toast.makeText(MobileAuthActivity.this,"Something went wrong",Toast.LENGTH_SHORT).show();
+                progressDialog.cancel();
+
+            }
+        });
+
+
+    }
 
 
 }

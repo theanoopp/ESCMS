@@ -23,6 +23,14 @@
           }
         },
         {
+          "client_id": "419018113033-1thpsm4d69ll93avumqod3kruv9cu41e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "in.equipshare.escms",
+            "certificate_hash": "7f1aae821c8c370d3a39b76e39e51821c7322485"
+          }
+        },
+        {
           "client_id": "419018113033-4te1kps4904ct47951f1i0daaegpeh7q.apps.googleusercontent.com",
           "client_type": 3
         }
