@@ -1,4 +1,4 @@
-package in.equipshare.escms;
+package in.equipshare.escms.activities;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -9,23 +9,15 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import org.w3c.dom.Text;
-
-import in.equipshare.escms.activities.LoginActivity;
-import in.equipshare.escms.activities.MobileAuthActivity;
-import in.equipshare.escms.activities.RegisterActivity;
-import in.equipshare.escms.activities.TempActivity;
+import in.equipshare.escms.R;
 import in.equipshare.escms.model.Result;
 import in.equipshare.escms.rest.APIService;
 import in.equipshare.escms.utils.ApiUtils;
@@ -155,7 +147,7 @@ public class StartActivity extends AppCompatActivity {
                     progressDialog.cancel();
                     session.createLoginSession(email, password,result.getToken());
                     // TODO: 7/7/18 create dashboard
-                    Intent intent = new Intent(StartActivity.this, TempActivity.class);
+                    Intent intent = new Intent(StartActivity.this, HomeActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     intent.putExtra("Result", result);
                     startActivity(intent);

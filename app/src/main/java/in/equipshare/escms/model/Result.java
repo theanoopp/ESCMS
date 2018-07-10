@@ -18,33 +18,11 @@ public class Result implements Parcelable {
     @SerializedName("token")
     @Expose
     private String token;
+
     @SerializedName("msg")
     @Expose
-     private String msg;
-    @SerializedName("user")
-    @Expose
-    private Boolean user;
-    @SerializedName("supplierName")
-    @Expose
-    private String suppname;
+    private String msg;
 
-
-
-    public String getSuppname() {
-        return suppname;
-    }
-
-    public void setSuppname(String suppname) {
-        this.suppname = suppname;
-    }
-
-    public Boolean getUser() {
-        return user;
-    }
-
-    public void setUser(Boolean user) {
-        this.user = user;
-    }
 
     public String getMsg() {
         return msg;
@@ -85,16 +63,12 @@ public class Result implements Parcelable {
         dest.writeValue(this.success);
         dest.writeString(this.token);
         dest.writeString(this.msg);
-        dest.writeValue(this.user);
-        dest.writeString(this.suppname);
     }
 
     protected Result(Parcel in) {
         this.success = (Boolean) in.readValue(Boolean.class.getClassLoader());
         this.token = in.readString();
         this.msg = in.readString();
-        this.user = (Boolean) in.readValue(Boolean.class.getClassLoader());
-        this.suppname = in.readString();
     }
 
     public static final Creator<Result> CREATOR = new Creator<Result>() {

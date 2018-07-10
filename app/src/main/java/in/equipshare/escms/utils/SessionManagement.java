@@ -7,20 +7,20 @@ import android.content.SharedPreferences;
 
 import java.util.HashMap;
 
-import in.equipshare.escms.activities.LoginActivity;
+import in.equipshare.escms.activities.StartActivity;
 
 public class SessionManagement {
     // Shared Preferences
-    SharedPreferences pref;
+    private SharedPreferences pref;
 
     // Editor for Shared preferences
-    SharedPreferences.Editor editor;
+    private SharedPreferences.Editor editor;
 
     // Context
-    Context _context;
+    private Context _context;
 
     // Shared pref mode
-    int PRIVATE_MODE = 0;
+    private int PRIVATE_MODE = 0;
 
     // Sharedpref file name
     private static final String PREF_NAME = "Login";
@@ -41,6 +41,8 @@ public class SessionManagement {
         pref = _context.getSharedPreferences(PREF_NAME, PRIVATE_MODE);
         editor = pref.edit();
     }
+
+
     /**
      * Create login session
      * */
@@ -48,12 +50,10 @@ public class SessionManagement {
         // Storing login value as TRUE
         editor.putBoolean(IS_LOGIN, true);
 
-
-
         // Storing email in pref
         editor.putString(KEY_EMAIL, email);
 
-        // Storing name in pref
+        // Storing pass in pref
         editor.putString(KEY_PASS, pass);
 
         editor.putString(KEY_TOKEN,token);
@@ -62,16 +62,19 @@ public class SessionManagement {
         editor.commit();
     }
 
+
+
     /**
      * Check login method wil check user login status
      * If false it will redirect user to login page
      * Else won't do anything
      * */
     public void checkLogin(Activity activity){
+
         // Check login status
         if(!this.isLoggedIn()){
             // user is not logged in redirect him to Login Activity
-            Intent i = new Intent(_context, LoginActivity.class);
+            Intent i = new Intent(_context, StartActivity.class);
             // Closing all the Activities
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
@@ -123,7 +126,7 @@ public class SessionManagement {
 
         // Staring Login Activity
         _context.startActivity(i);*/
-        Intent i = new Intent(_context, LoginActivity.class);
+        Intent i = new Intent(_context, StartActivity.class);
         i.setFlags(i.FLAG_ACTIVITY_NEW_TASK | i.FLAG_ACTIVITY_CLEAR_TASK);
         _context.startActivity(i); // Launch the Homescreen Activity
         //_finish();

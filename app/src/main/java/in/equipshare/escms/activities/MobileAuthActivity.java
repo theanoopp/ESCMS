@@ -6,12 +6,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -20,8 +17,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
@@ -37,7 +32,6 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import in.equipshare.escms.R;
-import in.equipshare.escms.StartActivity;
 import in.equipshare.escms.model.Result;
 import in.equipshare.escms.model.SignupUser;
 import in.equipshare.escms.rest.APIService;
@@ -50,9 +44,7 @@ public class MobileAuthActivity extends AppCompatActivity {
 
     private static final String TAG = "MobileAuthActivity";
 
-
     private SignupUser signupUser;
-
 
     private ConstraintLayout phoneLayout,codeLayout;
     private TextInputLayout phoneET,codeET;
@@ -75,8 +67,6 @@ public class MobileAuthActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mobile_auth);
-        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
 
         Intent i = getIntent();
         Bundle bundle = i.getExtras();

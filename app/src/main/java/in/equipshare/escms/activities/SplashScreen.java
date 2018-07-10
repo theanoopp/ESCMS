@@ -11,20 +11,37 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.HashMap;
 
 import in.equipshare.escms.R;
-import in.equipshare.escms.StartActivity;
+import in.equipshare.escms.model.Result;
+import in.equipshare.escms.rest.APIService;
+import in.equipshare.escms.utils.ApiUtils;
+import in.equipshare.escms.utils.SessionManagement;
+import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class SplashScreen extends AppCompatActivity {
+
+    SessionManagement session;
+    Gson gson = new GsonBuilder().setLenient().create();
+    Result result;
+
+    OkHttpClient client = new OkHttpClient();
+    Retrofit.Builder builder=new Retrofit.Builder().baseUrl(ApiUtils.BASE_URL).client(client).addConverterFactory(GsonConverterFactory.create(gson));
+    Retrofit retrofit=builder.build();
+    APIService retrofitInterface=retrofit.create(APIService.class);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
+
     }
 
 
@@ -53,7 +70,7 @@ public class SplashScreen extends AppCompatActivity {
                     })
                     .show();
         } else {
-            Splash();
+            splash();
         }
     }
 
@@ -76,88 +93,36 @@ public class SplashScreen extends AppCompatActivity {
     }
 
 
-    public void Splash() {
+    public void splash() {
         int SPLASH_TIME_OUT = 2000;
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
 
-                startActivity(new Intent(SplashScreen.this,StartActivity.class));
-                finish();
-                /*
+                //startActivity(new Intent(SplashScreen.this,StartActivity.class));
+                //finish();
 
-                //session = new SessionManagement(getApplicationContext());
-                // Toast.makeText(getApplicationContext(), "User Login Status: " + session.isLoggedIn(), Toast.LENGTH_LONG).show();
 
-                if(!SplashScreen.this.session.isLoggedIn())
-                {
+                session = new SessionManagement(getApplicationContext());
+
+
+                if(session.isLoggedIn()) {
+
                     Log.e("TAG", "execterd");
-                    Intent i=new Intent(SplashScreen.this,LoginActivity.class);
+                    Intent i=new Intent(SplashScreen.this,StartActivity.class);
                     startActivity(i);
                     finish();
 
+                } else{
+
+                    Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra("Result", result);
+                    startActivity(intent);
+                    finish();
 
                 }
-                else{   HashMap<String, String> user = session.getUserDetails();
 
-                    String token=user.get(SessionManagement.KEY_TOKEN);
-                    Call<Result> call=retrofitInterface.session_manage(token);
-
-                    call.enqueue(new Callback<Result>() {
-                        @Override
-                        public void onResponse(Call<Result> call, retrofit2.Response<Result> response) {
-
-                            result=  response.body();// have your all data
-                            boolean check=false;
-                            if(result!=null)  {check=result.getSuccess();}
-
-                            if((!check)||result.getSuccess()==null)
-                            {
-                                new AlertDialog.Builder(SplashScreen.this)
-                                        .setTitle("Can't Connect to Server")
-                                        .setMessage("Can't Connect to server Please Check after some time")
-                                        .setPositiveButton("Exit", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialogInterface, int i) {
-                                                finish();
-                                                System.exit(0);
-                                            }
-                                        })
-                                        .show();
-                            }
-                            else {
-                                Log.e("TAG", "response 33: " + new Gson().toJson(response.body()));
-                                Log.e("TAG", "response 33: " + response.body());
-                                Intent intent = new Intent(getApplicationContext(), DashBoard.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                intent.putExtra("Result", result);
-                                startActivity(intent);
-                                finish();
-                            }
-                        }
-                        @Override
-                        public void onFailure(Call<Result> call, Throwable t) {
-
-                            Log.e("TAG", "response 33: " +t.getMessage());
-                            if(t.getMessage().contains("connect"))
-                            {
-                                new AlertDialog.Builder(SplashScreen.this)
-                                        .setMessage("Can't Connect to server Please Check after some time")
-                                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialogInterface, int i) {
-                                                finish();
-                                                System.exit(0);
-                                            }
-                                        }).show();
-                            }
-                            Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
-
-                        }
-
-                    });}
-
-                    */
             }
         }, SPLASH_TIME_OUT);
     }
